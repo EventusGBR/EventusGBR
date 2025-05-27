@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Eventliste – Eventus</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+  <h1 class="text-2xl font-bold mb-6 text-center">Alle Events</h1>
+  <ul id="eventListe" class="space-y-4 max-w-2xl mx-auto bg-white p-6 rounded shadow"></ul>
+
+  <script>
+    const supabase = supabase.createClient('https://DEINE_SUPABASE_URL.supabase.co', 'DEIN_ANON_KEY');
+
+    async function ladeEvents() {
+      const { data: events, error } = await supabase
+        .from('events')
+        .select('*')
+        .order('datum', { ascending: true });
+
+      if (error) {
+        alert('Fehler beim Laden der Events');
+        console.error(error);
+        return;
+      }
+
+      const liste = document.getElementById('eventListe');
+      liste.innerHTML = '';
+
+      events.forEach(event => {
+        const li = document.createElement('li');
+        li.innerHTML = `<strong>${event.titel}</strong> – ${new Date(event.datum).toLocaleDateString()}<br><em>${event.ort}</em>`;
+        liste.appendChild(li);
+      });
+    }
+
+    ladeEvents();
+  </script>
+
+</body>
+</html>

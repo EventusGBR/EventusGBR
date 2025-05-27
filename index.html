@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Eventus</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
+
+  <!-- Logo -->
+  <img src="logo.png" alt="Eventus Logo" class="w-48 mb-8">
+
+  <!-- Buttons -->
+  <div class="space-y-4 w-full max-w-xs">
+    <button onclick="zeigeEvents()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded">
+      Events anzeigen
+    </button>
+    <button onclick="zeigeKarte()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded">
+      Karte anzeigen
+    </button>
+    <button onclick="window.location.href='login.html'" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded">
+      Event erstellen
+    </button>
+  </div>
+
+  <!-- Event-Liste (wird per JS angezeigt) -->
+  <div id="eventListe" class="mt-8 w-full max-w-md hidden bg-white p-4 rounded shadow">
+    <h2 class="text-xl font-bold mb-4">Events</h2>
+    <ul id="eventsUl" class="space-y-2"></ul>
+  </div>
+
+  <script>
+    // Supabase-Client initialisieren (DEINE DATEN EINTRAGEN!)
+    const supabase = supabase.createClient('https://DEINE_SUPABASE_URL.supabase.co', 'DEIN_ANON_KEY');
+
+    // Events aus Supabase holen und anzeigen
+    async function zeigeEvents() {
+      const { data: events, error } = await supabase
+        .from('events')
+        .select('*')
+        .order('datum', { ascending: true });
+
+      if (error) {
+        alert('Fehler beim Laden der Events');
+        console.error(error);
+        return;
+      }
+
+      const ul = document.getElementById('eventsUl');
+      ul.innerHTML = '';
+      events.forEach(event => {
+        const li = document.createElement('li');
+        li.textContent = `${event.titel} – ${new Date(event.datum).toLocaleDateString()} (${event.ort})`;
+        ul.appendChild(li);
+      });
+
+      document.getElementById('eventListe').classList.remove('hidden');
+    }
+
+    // Karte anzeigen (leitet auf eine andere Seite weiter)
+    function zeigeKarte() {
+      window.location.href = 'karte.html';
+    }
+  </script>
+
+</body>
+</html>

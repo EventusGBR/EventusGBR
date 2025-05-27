@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Event-Karte – Eventus</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    #map { height: 100vh; }
+  </style>
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <script>
+    const supabase = supabase.createClient('https://DEINE_SUPABASE_URL.supabase.co', 'DEIN_ANON_KEY');
+
+    const map = L.map('map').setView([51.1657, 10.4515], 6); // Deutschland Mitte
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap-Mitwirkende'
+    }).addTo(map);
+
+    async function ladeEvents() {
+      const { data: events, error } = await supabase
+        .from('events')
+        .select('*')
+        .gte('datum', new Date().toISOString());
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      // Nur wenn Events Koordinaten enthalten!
+      events.forEach(event => {
+        if (event.latitude && event.longitude) {
+          L.marker([event.latitude, event.longitude])
+            .addTo(map)
+            .bindPopup(`<strong>${event.titel}</strong><br>${new Date(event.datum).toLocaleDateString()}<br>${event.ort}`);
+        }
+      });
+    }
+
+    ladeEvents();
+  </script>
+
+</body>
+</html>
