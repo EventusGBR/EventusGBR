@@ -13,7 +13,7 @@
   <ul id="eventListe" class="space-y-4 max-w-2xl mx-auto bg-white p-6 rounded shadow"></ul>
 
   <script>
-    const supabase = supabase.createClient('https://DEINE_SUPABASE_URL.supabase.co', 'DEIN_ANON_KEY');
+    const supabase = supabase.createClient('https://qvfrxzvzummcfvkbvmvk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2ZnJ4enZ6dW1tY2Z2a2J2bXZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ4MTEwNjAsImV4cCI6MjA2MDM4NzA2MH0.xhFHFI-Q3xx017RmvmJ47tsxcrMVKTEN0Uvzqa1bsC4');
 
     async function ladeEvents() {
       const { data: events, error } = await supabase
