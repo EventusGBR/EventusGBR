@@ -1,51 +1,28 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Event-Karte – Eventus</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <meta charset="UTF-8" />
+  <title>Event-Karte</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+  />
   <style>
-    #map { height: 100vh; }
+    #map {
+      height: 100vh;
+    }
   </style>
 </head>
 <body>
-
   <div id="map"></div>
 
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    const supabase = supabase.createClient('https://qvfrxzvzummcfvkbvmvk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2ZnJ4enZ6dW1tY2Z2a2J2bXZrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ4MTEwNjAsImV4cCI6MjA2MDM4NzA2MH0.xhFHFI-Q3xx017RmvmJ47tsxcrMVKTEN0Uvzqa1bsC4');
-
-    const map = L.map('map').setView([51.1657, 10.4515], 6); // Deutschland Mitte
+    const map = L.map('map').setView([51.1657, 10.4515], 6);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap-Mitwirkende'
+      attribution: '© OpenStreetMap-Mitwirkende'
     }).addTo(map);
-
-    async function ladeEvents() {
-      const { data: events, error } = await supabase
-        .from('events')
-        .select('*')
-        .gte('datum', new Date().toISOString());
-
-      if (error) {
-        console.error(error);
-        return;
-      }
-
-      // Nur wenn Events Koordinaten enthalten!
-      events.forEach(event => {
-        if (event.latitude && event.longitude) {
-          L.marker([event.latitude, event.longitude])
-            .addTo(map)
-            .bindPopup(`<strong>${event.titel}</strong><br>${new Date(event.datum).toLocaleDateString()}<br>${event.ort}`);
-        }
-      });
-    }
-
-    ladeEvents();
   </script>
-
 </body>
 </html>
